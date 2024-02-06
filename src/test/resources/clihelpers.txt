@@ -1,0 +1,5 @@
+mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="codegen https://d37dzjv5lmxou4.cloudfront.net/user/login"
+
+https://trace.playwright.dev/ --> trace viewer
+
+mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="show-trace trace.zip" --> local trace viewer

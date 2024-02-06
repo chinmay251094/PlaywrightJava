@@ -1,0 +1,18 @@
+[
+  {
+    "Test Name": "launchGoogle",
+    "Test Description": "To test framework",
+    "Execute": "yes",
+    "Count": 1,
+    "Priority": 1,
+    "Id": 1
+  },
+  {
+    "Test Name": "testNavigatedToDashboard",
+    "Test Description": "To test user is navigated to dashboard page",
+    "Execute": "yes",
+    "Count": 1,
+    "Priority": 1,
+    "Id": 2
+  }
+]

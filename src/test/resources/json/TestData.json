@@ -1,0 +1,25 @@
+[
+  {
+    "Test Name": "launchGoogle",
+    "Test Description": "To check whether the user is able to login with valid credentials",
+    "Execute": "no",
+    "url": "http://www.google.co.in",
+    "mode": "local",
+    "version": "114.0",
+    "browser": "edge",
+    "headless": false,
+    "searchText": "cody rhodes"
+  },
+  {
+    "Test Name": "testNavigatedToDashboard",
+    "Test Description": "To test user is navigated to dashboard page",
+    "Execute": "yes",
+    "url": "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login",
+    "mode": "local",
+    "version": "114.0",
+    "browser": "chromium",
+    "headless": false,
+    "username": "Admin",
+    "password": "admin123"
+  }
+]
