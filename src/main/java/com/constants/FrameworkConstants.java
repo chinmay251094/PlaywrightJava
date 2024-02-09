@@ -12,7 +12,7 @@ public class FrameworkConstants {
     private static final String IMAGEPATH = RESOURCEPATH + "/images/";
     private static final String EXCELSHEETSPATH = RESOURCEPATH + "/excelsheets/";
     private static final String JSONSPATH = RESOURCEPATH + "/json/";
-    private static final String EXTENTREPORTSPATH = System.getProperty("user.dir") + "/extent-test-output/index.html";
+    private static final String EXTENTREPORTSPATH = System.getProperty("user.dir") + "/extent-test-output/";
     private static final Duration EXPLICITWAIT = Duration.ofSeconds(30);
     private static final String RUNMANAGERSHEET = "RunManager";
     private static final String DATAFILESHEET = "DataFile";
@@ -45,7 +45,7 @@ public class FrameworkConstants {
 
     public static String createReportPath() {
         if (PropertyUtils.get(ConfigProperties.OVERRIDEREPORTS).equalsIgnoreCase("no")) {
-            return EXTENTREPORTSPATH + "/" + "TechSoup_Ver1.0_" + DateTimeUtils.getDateTime() + ".html";
+            return EXTENTREPORTSPATH + "/" + "TestAutomation_Ver1.0_" + DateTimeUtils.getDateTime() + ".html";
         } else {
             return EXTENTREPORTSPATH + "/" + "index.html";
         }

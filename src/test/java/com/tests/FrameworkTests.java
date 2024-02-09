@@ -5,6 +5,7 @@ import com.base.BaseTest;
 import com.enums.TestCategory;
 import com.enums.Tester;
 import com.microsoft.playwright.Locator;
+import com.reports.FrameworkReportLogger;
 import lombok.SneakyThrows;
 import org.testng.annotations.Test;
 
@@ -19,8 +20,8 @@ public class FrameworkTests extends BaseTest {
     void launchGoogle(Map<String, String> map) {
         System.out.println(getPage().title());
         Locator textBox = getPage().locator("[name=q]").first();
-//        textBox.fill(map.get("searchText"));
-        textBox.fill("searchText");
+        textBox.fill(map.get("searchText"));
+        FrameworkReportLogger.info("Data is filled in");
         getPage().press("[name=q]", "Enter");
     }
 }

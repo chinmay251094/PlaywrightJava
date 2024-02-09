@@ -57,7 +57,6 @@ public class DriverManager {
         if (browserThreadLocal.get() != null) {
             browserThreadLocal.get().close();
             browserThreadLocal.remove();
-            browserContextThreadLocal.remove();
         }
         if (playwrightThreadLocal.get() != null) {
             playwrightThreadLocal.get().close();

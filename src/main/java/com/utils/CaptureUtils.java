@@ -19,11 +19,11 @@ import static org.monte.media.VideoFormatKeys.*;
 
 public class CaptureUtils extends ScreenRecorder {
 
-    // Record with Monte Media library
-    public static ScreenRecorder screenRecorder;
     //Tạo format ngày giờ để xíu gắn dô cái name của screenshot hoặc record video không bị trùng tên (không bị ghi đè file)
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
-    public String name;
+    private final static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
+    // Record with Monte Media library
+    private static ScreenRecorder screenRecorder;
+    private String name;
 
     //Hàm xây dựng
     public CaptureUtils(GraphicsConfiguration cfg, Rectangle captureArea, Format fileFormat, Format screenFormat, Format mouseFormat, Format audioFormat, File movieFolder, String name) throws IOException, AWTException {
@@ -34,7 +34,7 @@ public class CaptureUtils extends ScreenRecorder {
     // Start record video
     public static void startRecord(String methodName) {
         //Tạo thư mục để lưu file video vào
-        File file = new File(SystemUtils.getCurrentDir() + "reports/VideoRecords/");
+        File file = new File(SystemUtils.getCurrentDir() + "media/VideoRecords/");
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int width = screenSize.width;
         int height = screenSize.height;
@@ -63,15 +63,21 @@ public class CaptureUtils extends ScreenRecorder {
 
     public static void takeScreenshot(String screenshotName) {
         try {
-            // screenshots
-            ScreenshotOptions screenshotOptions = new ScreenshotOptions();
-
-            File theDir = new File(SystemUtils.getCurrentDir() + "reports/Screenshots/");
-            if (!theDir.exists()) {
-                theDir.mkdirs();
+            // Create directory if it doesn't exist
+            String directoryPath = SystemUtils.getCurrentDir() + "media/Screenshots/";
+            File directory = new File(directoryPath);
+            if (!directory.exists()) {
+                directory.mkdirs();
             }
 
-            DriverManager.getPage().screenshot(screenshotOptions.setPath(Paths.get(SystemUtils.getCurrentDir() + "reports/Screenshots/" + File.separator + screenshotName + "_" + dateFormat.format(new Date()) + ".png")));
+            // Define screenshot options
+            ScreenshotOptions screenshotOptions = new ScreenshotOptions();
+
+            // Take screenshot and save to the specified path
+            String filePath = Paths.get(directoryPath, screenshotName + "_" + dateFormat.format(new Date()) + ".png").toString();
+            DriverManager.getPage().screenshot(screenshotOptions.setPath(Paths.get(filePath)));
+
+            // Print confirmation messages
             System.out.println("Screenshot taken: " + screenshotName);
             System.out.println("Screenshot taken current URL: " + DriverManager.getPage().url());
         } catch (Exception e) {

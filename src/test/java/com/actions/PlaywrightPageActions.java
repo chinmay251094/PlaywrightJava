@@ -4,6 +4,7 @@ import com.driver.DriverManager;
 import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.PlaywrightException;
 
 import static com.reports.FrameworkReportLogger.info;
 
@@ -30,8 +31,12 @@ public class PlaywrightPageActions {
     }
 
     public static void fill(Locator locator, String value, String locatorType) {
-        locator.fill(value);
-        info("Fill text " + value + " on element " + locatorType);
+        try {
+            locator.fill(value);
+            info("Fill text " + value + " on element " + locatorType);
+        } catch (PlaywrightException e) {
+            System.err.println("Error while filling element " + locatorType + ": " + e.getMessage());
+        }
     }
 
     // Utility method to get ElementHandle
