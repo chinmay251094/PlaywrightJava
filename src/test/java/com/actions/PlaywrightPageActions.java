@@ -11,6 +11,15 @@ import static com.reports.FrameworkReportLogger.info;
 public class PlaywrightPageActions {
     private static final int STEP_TIME = 1000; // Adjust this value as needed
 
+    public static void highlightElement(ElementHandle element) {
+        try {
+            // Highlighting the element
+            element.evaluate("element => element.style.border = '4px solid red';");
+        } catch (PlaywrightException e) {
+            System.err.println("Error while highlighting element: " + e.getMessage());
+        }
+    }
+
     // Click action
     public static void click(String selector) {
         sleep();
@@ -18,9 +27,11 @@ public class PlaywrightPageActions {
         info("Click element " + selector);
     }
 
-    public static void click(Locator locator) {
+    public static void click(Locator locator, String locatorType) {
+        // Highlighting the element
+        highlightElement(locator.elementHandle());
         locator.click();
-        info("Click element " + locator);
+        info("Click element <b>" + locatorType + "</b>");
     }
 
     // Fill text action
@@ -32,8 +43,10 @@ public class PlaywrightPageActions {
 
     public static void fill(Locator locator, String value, String locatorType) {
         try {
+            // Highlighting the element
+            highlightElement(locator.elementHandle());
             locator.fill(value);
-            info("Fill text " + value + " on element " + locatorType);
+            info("Fill text <b>" + value + "</b> on element " + locatorType);
         } catch (PlaywrightException e) {
             System.err.println("Error while filling element " + locatorType + ": " + e.getMessage());
         }
@@ -85,9 +98,7 @@ public class PlaywrightPageActions {
     }
 
     public static Page fetchElement() {
-        try (Page page = DriverManager.getPage()) {
-            return page;
-        }
+        return DriverManager.getPage();
     }
 
     // Utility method for sleep

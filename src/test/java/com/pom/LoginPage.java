@@ -1,7 +1,6 @@
 package com.pom;
 
 import com.actions.PlaywrightPageActions;
-import com.driver.DriverManager;
 import com.microsoft.playwright.Locator;
 
 public class LoginPage extends PlaywrightPageActions {
@@ -17,9 +16,8 @@ public class LoginPage extends PlaywrightPageActions {
     }
 
     public void loginToOrangeHRM(String uname, String pwd) {
-        DriverManager.getPage().waitForLoadState();
         fill(textBoxUsername, uname, "Username");
         fill(textBoxPassword, pwd, "Password");
-        click(buttonLogin);
+        click(buttonLogin, "Login");
     }
 }

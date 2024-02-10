@@ -1,10 +1,11 @@
 package com.pom;
 
 import com.actions.PlaywrightPageActions;
+import com.driver.DriverManager;
 import com.microsoft.playwright.Locator;
 
 public class DashboardPage extends PlaywrightPageActions {
-    private Locator textDashboard = fetchElement().getByText("Dashboard");
+    private final Locator textDashboard = DriverManager.getPage().getByText("Dashboard").first();
 
     private DashboardPage() {
     }

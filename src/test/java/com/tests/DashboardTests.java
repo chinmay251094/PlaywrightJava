@@ -6,6 +6,7 @@ import com.enums.TestCategory;
 import com.enums.Tester;
 import com.pom.DashboardPage;
 import com.utils.VerificationUtils;
+import lombok.SneakyThrows;
 import org.testng.annotations.Test;
 
 import java.util.Map;
@@ -16,6 +17,7 @@ public class DashboardTests extends BaseTest {
     private DashboardTests() {
     }
 
+    @SneakyThrows
     @Test
     @TestInformation(author = Tester.CHINMAY, category = {TestCategory.SMOKE, TestCategory.SANITY})
     void testNavigatedToDashboard(Map<String, String> map) {

@@ -24,27 +24,18 @@ public class Driver {
             playwright = Playwright.create();
             DriverManager.setPlaywright(playwright);
 
-            Browser browser = null;
-            switch (browserName.toLowerCase().trim()) {
-                case "chromium":
-                    browser = DriverManager.getPlaywright().chromium().launch(new BrowserType.LaunchOptions().setHeadless(headless));
-                    break;
-                case "chrome":
-                    browser = DriverManager.getPlaywright().chromium().launch(new BrowserType.LaunchOptions().setChannel("chrome").setHeadless(headless));
-                    break;
-                case "edge":
-                    browser = DriverManager.getPlaywright().chromium().launch(new BrowserType.LaunchOptions().setChannel("msedge").setHeadless(headless));
-                    break;
-                case "firefox":
-                    browser = DriverManager.getPlaywright().firefox().launch(new BrowserType.LaunchOptions().setHeadless(headless));
-                    break;
-                case "safari":
-                    browser = DriverManager.getPlaywright().webkit().launch(new BrowserType.LaunchOptions().setHeadless(headless));
-                    break;
-                default:
-                    browser = DriverManager.getPlaywright().chromium().launch(new BrowserType.LaunchOptions().setHeadless(headless));
-                    break;
-            }
+            Browser browser = switch (browserName.toLowerCase().trim()) {
+                case "chrome" ->
+                        DriverManager.getPlaywright().chromium().launch(new BrowserType.LaunchOptions().setChannel("chrome").setHeadless(headless));
+                case "edge" ->
+                        DriverManager.getPlaywright().chromium().launch(new BrowserType.LaunchOptions().setChannel("msedge").setHeadless(headless));
+                case "firefox" ->
+                        DriverManager.getPlaywright().firefox().launch(new BrowserType.LaunchOptions().setHeadless(headless));
+                case "safari" ->
+                        DriverManager.getPlaywright().webkit().launch(new BrowserType.LaunchOptions().setHeadless(headless));
+                default ->
+                        DriverManager.getPlaywright().chromium().launch(new BrowserType.LaunchOptions().setHeadless(headless));
+            };
 
             String name = browser.browserType().name();
             String version = browser.version();
@@ -74,12 +65,6 @@ public class Driver {
             return null;
         }
     }
-
-    /* private static void navigate(String url) {
-         DriverManager.getPage().navigate(url);
-         LogUtils.info("Navigate to URL: " + url);
-         FrameworkReportLogger.info("Navigate to URL: " + url);
-     } */
 
     private static void maximizeBrowserOnWindow() {
         Robot rb = null;
