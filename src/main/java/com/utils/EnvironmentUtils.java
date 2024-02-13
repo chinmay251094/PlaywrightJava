@@ -1,33 +1,27 @@
 package com.utils;
 
+import lombok.Getter;
+
 public final class EnvironmentUtils {
+    @Getter
     private static String mode;
+    @Getter
     private static String url;
+    @Getter
     private static String browser;
     private static String isHeadlessMode;
+    @Getter
     private static String version;
 
     private EnvironmentUtils() {
-    }
-
-    public static String getVersion() {
-        return version;
     }
 
     public static void setVersion(String version) {
         EnvironmentUtils.version = version;
     }
 
-    public static String getMode() {
-        return mode;
-    }
-
     public static void setMode(String mode) {
         EnvironmentUtils.mode = mode;
-    }
-
-    public static String getUrl() {
-        return url;
     }
 
     public static void setUrl(String url) {
@@ -60,10 +54,6 @@ public final class EnvironmentUtils {
 
     public static String getOSInfo() {
         return System.getProperty("os.name");
-    }
-
-    public static String getBrowser() {
-        return browser;
     }
 
     public static void setBrowser(String browser) {

@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 
 import java.util.Map;
 
-import static com.driver.DriverManager.getPage;
+import static com.driver.PlaywrightManager.getPage;
 
 public class FrameworkTests extends BaseTest {
     @SneakyThrows

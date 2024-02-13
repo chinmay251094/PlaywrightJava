@@ -1,7 +1,7 @@
 package com.base;
 
 import com.annotations.MustExtendBaseTest;
-import com.driver.DriverManager;
+import com.driver.PlaywrightManager;
 import com.exceptions.TestException;
 import com.utils.EnvironmentUtils;
 import org.testng.annotations.AfterMethod;
@@ -9,7 +9,7 @@ import org.testng.annotations.BeforeMethod;
 
 import java.util.Map;
 
-import static com.driver.Driver.createBrowser;
+import static com.driver.PlaywrightDriver.createBrowser;
 
 @MustExtendBaseTest
 public class BaseTest {
@@ -27,7 +27,7 @@ public class BaseTest {
 
     @AfterMethod(alwaysRun = true)
     public void closePage() {
-        DriverManager.closePage();
-        DriverManager.closeBrowser();
+        PlaywrightManager.closePage();
+        PlaywrightManager.closeBrowser();
     }
 }

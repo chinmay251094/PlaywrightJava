@@ -5,21 +5,21 @@ import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.markuputils.ExtentColor;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
-import com.driver.DriverManager;
+import com.driver.PlaywrightManager;
 import com.enums.ConfigProperties;
 import com.microsoft.playwright.Page;
 import com.utils.SystemUtils;
 
-import java.io.File;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static com.reports.FrameworkReportManager.getExtent;
-import static com.reports.FrameworkReports.addScreenShot;
 import static com.utils.PropertyUtils.get;
 
 public final class FrameworkReportLogger {
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
+
     private FrameworkReportLogger() {
     }
 
@@ -39,24 +39,17 @@ public final class FrameworkReportLogger {
         getExtent().info(message);
     }
 
-    public static void pass(String message, String validationReason) {
-        String combinedMessage = message + " - " + validationReason;
-        getExtent().pass(combinedMessage);
-    }
-
     public static void pass(String message, boolean isScreenshotNeeded) {
-        if (get(ConfigProperties.PASSEDSCREENSHOT).equalsIgnoreCase("yes")
-                && isScreenshotNeeded) {
-            addScreenShot(message);
+        if (isScreenshotNeeded) {
+            addScreenshotWithCondition(message, ConfigProperties.PASSEDSCREENSHOT.toString());
         } else {
             pass(message);
         }
     }
 
     public static void info(String message, boolean isScreenshotNeeded) {
-        if (get(ConfigProperties.PASSEDSCREENSHOT).equalsIgnoreCase("yes")
-                && isScreenshotNeeded) {
-            addScreenShot(message);
+        if (isScreenshotNeeded) {
+            addScreenshotWithCondition(message, ConfigProperties.PASSEDSCREENSHOT.toString());
         } else {
             info(message);
         }
@@ -78,18 +71,27 @@ public final class FrameworkReportLogger {
     }
 
     public static void skip(String message, boolean isScreenshotNeeded) {
-        if (get(ConfigProperties.SKIPPPEDSCREENSHOT).equalsIgnoreCase("yes")
-                && isScreenshotNeeded) {
-            getExtent().skip(message, MediaEntityBuilder.createScreenCaptureFromPath(takeScreenshot()).build());
+        if (isScreenshotNeeded) {
+            addScreenshotWithCondition(message, ConfigProperties.SKIPPPEDSCREENSHOT.toString());
         } else {
             skip(message);
         }
     }
 
+    private static void addScreenshotWithCondition(String message, String screenshotProperty) {
+        if (get(ConfigProperties.valueOf(screenshotProperty)).equalsIgnoreCase("yes")) {
+            getExtent().pass(message, MediaEntityBuilder.createScreenCaptureFromPath(takeScreenshot()).build());
+        } else {
+            pass(message);
+        }
+    }
+
     public static String takeScreenshot() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
-        String path = SystemUtils.getCurrentDir() + "media/Screenshots/" + File.separator + "ExtentReport_" + dateFormat.format(new Date()) + ".png";
-        DriverManager.getPage().screenshot(new Page.ScreenshotOptions().setPath(Paths.get(path)).setFullPage(false));
-        return path;
+        synchronized (DATE_FORMAT) {
+            String currentTime = DATE_FORMAT.format(new Date());
+            String path = SystemUtils.getCurrentDir() + "media/Screenshots/ExtentReport_" + currentTime + ".png";
+            PlaywrightManager.getPage().screenshot(new Page.ScreenshotOptions().setPath(Paths.get(path)).setFullPage(false));
+            return path;
+        }
     }
 }

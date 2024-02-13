@@ -5,7 +5,8 @@ import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
-import com.driver.DriverManager;
+import com.constants.FrameworkConstants;
+import com.driver.PlaywrightManager;
 import com.enums.TestCategory;
 import com.enums.Tester;
 import com.microsoft.playwright.Page;
@@ -20,10 +21,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
-import java.util.Objects;
 
-import static com.constants.FrameworkConstants.getExtentReportFilepath;
-import static com.utils.EnvironmentUtils.getUrl;
 import static com.utils.EnvironmentUtils.isIsHeadlessMode;
 
 public final class FrameworkReports {
@@ -33,31 +31,38 @@ public final class FrameworkReports {
     }
 
     public static void initReports() {
-        if (Objects.isNull(extentReports)) {
+        if (extentReports == null) {
             extentReports = new ExtentReports();
-            ExtentSparkReporter spark = new ExtentSparkReporter(getExtentReportFilepath());
+            ExtentSparkReporter spark = new ExtentSparkReporter(FrameworkConstants.getExtentReportFilepath());
             extentReports.attachReporter(spark);
-            spark.config().setTheme(Theme.STANDARD);
-            spark.config().setDocumentTitle("Test Automation Reports");
-            spark.config().setReportName("Playwright Reports");
+            configureSparkReporter(spark);
         }
     }
 
+    private static void configureSparkReporter(ExtentSparkReporter spark) {
+        spark.config().setTheme(Theme.STANDARD);
+        spark.config().setDocumentTitle("Test Automation Reports");
+        spark.config().setReportName("Playwright Reports");
+    }
+
     public static void flushReports() {
-        if (Objects.nonNull(extentReports)) {
+        if (extentReports != null) {
             extentReports.flush();
         }
         FrameworkReportManager.unload();
+        openReportInBrowser();
+    }
 
+    private static void openReportInBrowser() {
         try {
-            Desktop.getDesktop().browse(new File(getExtentReportFilepath()).toURI());
+            Desktop.getDesktop().browse(new File(FrameworkConstants.getExtentReportFilepath()).toURI());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void createTest(String testcasename) {
-        FrameworkReportManager.setExtent(extentReports.createTest(EnvironmentUtils.getBrowserIcon(false) + " " + testcasename));
+    public static void createTest(String testcaseName) {
+        FrameworkReportManager.setExtent(extentReports.createTest(testcaseName));
     }
 
     public static void addAuthors(Tester[] authors) {
@@ -77,26 +82,37 @@ public final class FrameworkReports {
     }
 
     public static void setExecutionEnvironmentInfo() {
-        FrameworkReportManager.getExtent().info("<font color='blue'><b>" + "\uD83D\uDCBB "
-                + System.getProperty("os.name").replace(" ", "_") + "</b></font>" + " --------- " + EnvironmentUtils.getBrowserIcon(true));
-    }
-
-    public static void setUrlInfo() {
-        FrameworkReportManager.getExtent().info("<font color='blue'><b>" + "\uD83C\uDF10 " + getUrl() + "</b></font>");
+        String osName = System.getProperty("os.name").replace(" ", "_");
+        String browserIcon = EnvironmentUtils.getBrowserIcon(true);
+        String infoMessage = "<font color='blue'><b>" + "\uD83D\uDCBB " + osName + "</b></font> --------- " + browserIcon;
+        FrameworkReportManager.getExtent().info(infoMessage);
     }
 
     public static void setExecutionModeInfo() {
-        FrameworkReportManager.getExtent().info("<font color='blue'><b>" + isIsHeadlessMode() + "</b></font>");
+        String executionModeMessage = "<font color='blue'><b>" + isIsHeadlessMode() + "</b></font>";
+        FrameworkReportManager.getExtent().info(executionModeMessage);
+    }
+
+    public static void setUrlInfo() {
+        String urlMessage = "<font color='blue'><b>" + "\uD83C\uDF10 " + EnvironmentUtils.getUrl() + "</b></font>";
+        FrameworkReportManager.getExtent().info(urlMessage);
     }
 
     public static void addScreenShot(String message) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
-        Page.ScreenshotOptions screenshotOptions = new Page.ScreenshotOptions();
+        String encodedScreenshot = takeScreenshotAndEncode();
+        FrameworkReportManager.getExtent().log(Status.FAIL, message, MediaEntityBuilder.createScreenCaptureFromBase64String(encodedScreenshot).build());
+    }
 
-        String base64Image = DriverManager.getPage().screenshot(screenshotOptions.setPath(Paths.get(SystemUtils.getCurrentDir() + "media/Screenshots/" + File.separator + "ExtentReport_" + dateFormat.format(new Date()) + ".png"))).toString();
-        String encodedString = encodeToBase64(base64Image);
-        FrameworkReportManager.getExtent().log(Status.FAIL, message,
-                MediaEntityBuilder.createScreenCaptureFromBase64String(encodedString).build());
+    private static String takeScreenshotAndEncode() {
+        String screenshotPath = takeScreenshot();
+        return encodeToBase64(screenshotPath);
+    }
+
+    private static String takeScreenshot() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
+        String path = SystemUtils.getCurrentDir() + "media/Screenshots/" + File.separator + "ExtentReport_" + dateFormat.format(new Date()) + ".png";
+        PlaywrightManager.getPage().screenshot(new Page.ScreenshotOptions().setPath(Paths.get(path)).setFullPage(false));
+        return path;
     }
 
     private static String encodeToBase64(String originalString) {

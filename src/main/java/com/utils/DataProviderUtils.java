@@ -30,10 +30,7 @@ public final class DataProviderUtils {
                 // Check if the test name matches and execute flag is "yes"
                 if (name.equalsIgnoreCase(testName) && "yes".equalsIgnoreCase(executeFlag)) {
                     // Create a new HashMap to copy the data
-                    Map<String, String> map = new HashMap<>();
-                    for (Map.Entry<String, String> entry : hashMap.entrySet()) {
-                        map.put(entry.getKey(), entry.getValue());
-                    }
+                    Map<String, String> map = new HashMap<>(hashMap);
                     executeMethodsList.add(map);
                 }
             }

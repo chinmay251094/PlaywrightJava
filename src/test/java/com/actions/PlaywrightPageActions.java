@@ -1,6 +1,6 @@
 package com.actions;
 
-import com.driver.DriverManager;
+import com.driver.PlaywrightManager;
 import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
@@ -54,7 +54,7 @@ public class PlaywrightPageActions {
 
     // Utility method to get ElementHandle
     private static ElementHandle getElement(String selector) {
-        return DriverManager.getPage().locator(selector).elementHandle();
+        return PlaywrightManager.getPage().locator(selector).elementHandle();
     }
 
     // Double-click action
@@ -98,7 +98,7 @@ public class PlaywrightPageActions {
     }
 
     public static Page fetchElement() {
-        return DriverManager.getPage();
+        return PlaywrightManager.getPage();
     }
 
     // Utility method for sleep

@@ -5,13 +5,13 @@ import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 
-public class DriverManager {
+public class PlaywrightManager {
     private static final ThreadLocal<Browser> browserThreadLocal = new ThreadLocal<>();
     private static final ThreadLocal<BrowserContext> browserContextThreadLocal = new ThreadLocal<>();
     private static final ThreadLocal<Playwright> playwrightThreadLocal = new ThreadLocal<>();
     private static final ThreadLocal<Page> pageThreadLocal = new ThreadLocal<>();
 
-    private DriverManager() {
+    private PlaywrightManager() {
     }
 
     public static Browser getBrowser() {

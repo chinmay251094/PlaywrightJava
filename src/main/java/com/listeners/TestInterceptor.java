@@ -1,6 +1,7 @@
 package com.listeners;
 
 import com.constants.FrameworkConstants;
+import com.exceptions.TestException;
 import com.utils.JsonUtils;
 import org.testng.IMethodInstance;
 import org.testng.IMethodInterceptor;
@@ -25,33 +26,29 @@ public class TestInterceptor implements IMethodInterceptor {
                             && "yes".equalsIgnoreCase(hashMap.get("Execute")))
                     .findFirst()
                     .ifPresent(hashMap -> {
-                        method.getMethod().setDescription(hashMap.get("Test Description"));
-                        method.getMethod().setInvocationCount(Integer.parseInt(hashMap.get("Count")));
-                        method.getMethod().setPriority(Integer.parseInt(hashMap.get("Priority")));
+                        setMethodProperties(method, hashMap);
                         result.add(method);
                     });
         }
 
-        Comparator<IMethodInstance> comparator = Comparator.comparingInt(m -> m.getMethod().getPriority());
+        result.sort(Comparator.comparingInt(m -> m.getMethod().getPriority()));
 
-        result.sort(comparator);
+        methods.forEach(m -> ordered.add(m.getMethod().getInstance().getClass().getName() + "." + m.getMethod().getMethodName()));
 
-//        for (IMethodInstance m : result) {
-//            System.out.println(m.getMethod().getDescription());
-//        }
-
-        for (IMethodInstance m : methods) {
-            String clazz = m.getMethod().getInstance().getClass().getName() + ".";
-            ordered.add(clazz + m.getMethod().getMethodName());
-        }
         return result;
+    }
+
+    private void setMethodProperties(IMethodInstance method, ConcurrentHashMap<String, String> hashMap) {
+        method.getMethod().setDescription(hashMap.get("Test Description"));
+        method.getMethod().setInvocationCount(Integer.parseInt(hashMap.get("Count")));
+        method.getMethod().setPriority(Integer.parseInt(hashMap.get("Priority")));
     }
 
     private List<ConcurrentHashMap<String, String>> getSourceData() {
         try {
             return JsonUtils.readJsonFile(FrameworkConstants.getJsonspath("TestCases.json"));
         } catch (Exception ex) {
-            throw new RuntimeException("An error occurred while fetching data source.");
+            throw new TestException("An error occurred while fetching data source.");
         }
     }
 }
